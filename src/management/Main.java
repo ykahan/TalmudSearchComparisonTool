@@ -20,7 +20,7 @@ public class Main {
 //		Scanner scanner = new Scanner(System.in);
 //		System.out.println("Target phrase:");
 //		targetPhrase = scanner.nextLine();
-		targetPhrase = "היינו תנא קמא";
+		targetPhrase = "היינו תנא קמא";  // phrase hard-coded for ease of testing
 		
 		driver = Setup.setupDriver("Chrome");
 		System.out.println("Target phrase is {" + targetPhrase + "}");

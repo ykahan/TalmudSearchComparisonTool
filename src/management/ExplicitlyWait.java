@@ -23,7 +23,7 @@ public class ExplicitlyWait {
 			newElement = wait.until(ExpectedConditions.elementToBeClickable(element));
 		} catch (Exception e) {
 			System.out.println("START GOT EXCEPTION");
-			System.out.println(e.getMessage());
+			System.out.println("Error message: " + e.getMessage());
 			System.out.println("END GOT EXCEPTION");
 		}
 		return element;

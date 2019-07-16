@@ -23,9 +23,8 @@ public class DictaMachinery {
 	public static void getResults(String targetPhrase) throws InterruptedException {
 		goToTalmudSearch(targetPhrase);
 		waitForSkip();
-//		String hitsFound = repo.getNumHitsFound();
-		String dropdown = repo.getDropdownText();
-		System.out.println(dropdown);
+		String hitsFound = repo.getNumHitsFound();
+		System.out.println(hitsFound);
 	}
 
 	private static void waitForSkip() throws InterruptedException {

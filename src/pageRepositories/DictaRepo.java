@@ -57,7 +57,6 @@ public class DictaRepo {
 		System.out.println("Now commencing search for element");
 		WebElement element = ew.awaitElement(resultText, MAXWAIT);
 		System.out.println("Element search concluded");
-		result = element.getText();
 		if (resultText != null)
 			result = resultText.getText();
 		return result;
