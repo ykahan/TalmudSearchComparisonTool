@@ -27,13 +27,6 @@ public class Main {
 		DictaMachinery dm = new DictaMachinery(driver, MAXWAIT);
 		dm.getResults(targetPhrase);
 		driver.close();
-//		dictaList = DictaMachinery.getResults(targetPhrase);
-//		int listSize = dictaList.size();
-//		for(int i = 0; i < listSize; i++) {
-//			Hit hit = dictaList.get(i);
-//			System.out.println("Hit #" + (i + 1) + "\n");
-//			System.out.println(hit.toString());
-//		}
 	}
 
 }
