@@ -3,6 +3,7 @@ package searchResultsMachinery;
 import java.util.List;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import management.ExplicitlyWait;
 import pageRepositories.DictaRepo;
@@ -11,13 +12,11 @@ public class DictaMachinery {
 	static DictaRepo repo;
 	static WebDriver driver;
 	int MAXWAIT;
-//	ExplicitlyWait ew;
 
 	public DictaMachinery(WebDriver driver, int MAXWAIT) {
 		this.driver = driver;
 		this.MAXWAIT = MAXWAIT;
 		this.repo = new DictaRepo(driver, MAXWAIT);
-//		this.ew = new ExplicitlyWait(driver);
 	}
 
 	public static void getResults(String targetPhrase) throws InterruptedException {
@@ -28,7 +27,7 @@ public class DictaMachinery {
 	}
 
 	private static void waitForSkip() throws InterruptedException {
-		int waitTime = 10000; // time to wait in milliseconds
+		int waitTime = 10000; // time to wait in milliseconds to allow siteskip
 		Thread.sleep(waitTime);
 		
 	}
