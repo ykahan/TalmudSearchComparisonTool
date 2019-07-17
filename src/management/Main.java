@@ -25,7 +25,8 @@ public class Main {
 		driver = Setup.setupDriver("Chrome");
 		System.out.println("Target phrase is {" + targetPhrase + "}");
 		DictaMachinery dm = new DictaMachinery(driver, MAXWAIT);
-		dm.getResults(targetPhrase);
+		int numDictaResults = dm.getNumResults(targetPhrase);
+		List<Hit> dictaHits = dm.getListHits(numDictaResults);
 		driver.close();
 	}
 

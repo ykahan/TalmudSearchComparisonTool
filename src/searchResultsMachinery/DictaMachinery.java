@@ -1,5 +1,6 @@
 package searchResultsMachinery;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.WebDriver;
@@ -14,16 +15,22 @@ public class DictaMachinery {
 	int MAXWAIT;
 
 	public DictaMachinery(WebDriver driver, int MAXWAIT) {
-		this.driver = driver;
+		DictaMachinery.driver = driver;
 		this.MAXWAIT = MAXWAIT;
-		this.repo = new DictaRepo(driver, MAXWAIT);
+		DictaMachinery.repo = new DictaRepo(driver, MAXWAIT);
 	}
 
-	public static void getResults(String targetPhrase) throws InterruptedException {
+	public int getNumResults(String targetPhrase) throws InterruptedException {
 		goToTalmudSearch(targetPhrase);
 		waitForSkip();
+		return getNumHitsFound();
+	}
+
+	private static int getNumHitsFound() {
 		String hitsFound = repo.getNumHitsFound();
-		System.out.println(hitsFound);
+		String[] hitsFoundArray = hitsFound.split(" ");
+		System.out.println(hitsFoundArray[5]);
+		return Integer.parseInt(hitsFoundArray[5]);
 	}
 
 	private static void waitForSkip() throws InterruptedException {
@@ -48,5 +55,10 @@ public class DictaMachinery {
 		}
 		String url = sb.toString();
 		return url;
+	}
+
+	public List<Hit> getListHits(int numHits) throws InterruptedException {
+		List<Hit> dictaHitsList = repo.getHitsList(numHits);
+		return null;
 	}
 }
