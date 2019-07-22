@@ -1,5 +1,6 @@
 package pageRepositories;
 
+import org.openqa.selenium.By;
 //import org.openqa.selenium.By;
 //import org.openqa.selenium.JavascriptExecutor;
 //import org.openqa.selenium.Keys;
@@ -18,6 +19,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import management.ExplicitlyWait;
@@ -40,19 +42,28 @@ public class DictaRepo {
 
 	@FindBy(xpath = "//button[@id='search_button']")
 	WebElement searchBoxButton;
-	
+
 	@FindBy(xpath = "//div[@id='verses-text']//p[@class='f gray top-number-of-results']")
 	WebElement resultText;
-	
+
 	@FindBy(xpath = "//div[@id='drop-down-sort']")
 	WebElement dropdown;
-		
-	@FindBy(xpath="//li[@class='result-li']/div")
-	List<WebElement> hitsList;
 
-	@FindBy(xpath="//ul[@id='pagination']//button")
+	@FindBy(xpath = "//a[@data-target='#detail']/span")
+	List<WebElement> summaryList;
+
+	@FindBy(xpath = "//ul[@id='pagination']//button")
 	List<WebElement> navigationButtons;
+	
+	@FindBy(xpath="//button[@class='pagination__navigation']")
+	List<WebElement> pageNavigationButtons;
 
+	@FindBy(xpath = "//div[@class='result-li-top-section']")
+	List<WebElement> instancesList;
+
+	@FindBy(xpath = "//div[@class='sentence-holder']")
+	List<WebElement> talmudTextList;
+	
 	public void sendPhrase(String targetPhrase) {
 		WebElement box = ew.awaitElement(searchBox, MAXWAIT);
 		WebElement button = ew.awaitElement(searchBoxButton, MAXWAIT);
@@ -72,9 +83,7 @@ public class DictaRepo {
 
 	public String getNumHitsFound() {
 		String result = "number of hits not found";
-		System.out.println("Now commencing search for element");
 		WebElement element = ew.awaitElement(resultText, MAXWAIT);
-		System.out.println("Element search concluded");
 		if (resultText != null)
 			result = resultText.getText();
 		return result;
@@ -89,36 +98,164 @@ public class DictaRepo {
 	public String getDropdownText() {
 		WebElement element = findDropdown();
 		String text = "";
-		if(element != null) text = element.getText();
-		else text = "element null";
+		if (element != null)
+			text = element.getText();
+		else
+			text = "element null";
 		return text;
 	}
 
-	public List<Hit> getHitsList(int numHits) throws InterruptedException {
-		List<WebElement> foundList = ew.awaitList(hitsList, MAXWAIT);
-		int size = foundList.size();
-		int numScanned = 0;
-		for(int i = 0; i < size; i++) {
-			String text = foundList.get(i).getText();
-			System.out.println("=====================");
-			System.out.println(i+1 + ":");
-			System.out.println(text);
-			System.out.println("=====================");
-			
-			numScanned++;
-			if(i == (size - 1) && numScanned < numHits) {
-				clickNextPageButton();
+//	public List<Hit> getHitsList(String targetPhrase, int numHits) throws InterruptedException {
+//		List<WebElement> foundList = ew.awaitList(hitsList, MAXWAIT);
+//		int foundListSize = foundList.size();
+//		
+//		String[] targetPhraseArray = targetPhrase.split(" ");
+//		int targetPhraseLength = targetPhraseArray.length;
+//		
+//		int numScanned = 0;
+//		
+//		List<Hit> output = new ArrayList<Hit>();
+//		
+//		for(int hit = 0; hit < foundListSize; hit++) {
+//			String masechta = "";
+//			String daf = "";
+//			String amud = "";
+//			String text = "";
+//			
+//			String unprocessedText = foundList.get(hit).getText();
+//			String[] unprocessedTextArray = unprocessedText.split(" ");
+//			int unprocessedTextLength = unprocessedTextArray.length;
+//			int startTargetPhrase = targetPhraseFound(targetPhraseArray, unprocessedTextArray);
+//
+//			for(int word = 0; word < unprocessedTextLength; word++) {
+//				if (unprocessedTextArray[word] == "מסכת") masechta = unprocessedTextArray[word + 1];
+//				if(unprocessedTextArray[word] == "דף") {
+//					daf = unprocessedTextArray[word + 1];
+//					amud = unprocessedTextArray[word + 2];
+//					amud = amud.substring(1);  // getting rid of the comma
+//				}
+//				
+//			}
+//			
+//			if(startTargetPhrase > -1) {
+//				for(int word = 0; word < targetPhraseLength + 3 && word < unprocessedTextLength; word++) {
+//					text += word + " ";
+//				}
+//				text = text.substring(0, text.length() - 1); // getting rid of the extra space
+//			}
+//			
+//			Hit instance = new Hit(text, masechta, daf, amud);
+//			output.add(instance);
+//			
+//			numScanned++;
+//			if(hit == (foundListSize - 1) && numScanned < numHits) {
+//				clickNextPageButton();
+//			}
+//		}
+//		return output;
+//	}
+
+	public List<Hit> getHitsList(String targetPhrase, int numHits) throws InterruptedException {
+		int numDictaPages = getNumDictaPages(numHits);
+		List<Hit> dictaHitsList = new ArrayList<Hit>();
+		String[] nameDafAmudText = new String[4];;
+
+		for (int page = 0; page < numDictaPages; page++) {
+			List<WebElement> summaryListLocal = ew.awaitList(summaryList, MAXWAIT);
+
+			int numFoundInstances = summaryListLocal.size();
+
+			for (int instance = 0; instance < numFoundInstances; instance++) {
+				// getting name and location data
+				nameDafAmudText = getNameDafAmud(summaryListLocal, instance);
+				// getting text
+				nameDafAmudText[3] = getText(instance);
+				
+				String name = nameDafAmudText[0];
+				String daf = nameDafAmudText[1];
+				String amud = nameDafAmudText[2];
+				String text = nameDafAmudText[3];
+				
+				Hit hit = new Hit(name, daf, amud, text);
+				dictaHitsList.add(hit);
+				
 			}
+			clickNextPageButton();
 		}
-		return null;
-	}
-	
-	private void clickNextPageButton() throws InterruptedException {
-		List<WebElement> list = ew.awaitList(navigationButtons, MAXWAIT);
-		int size = list.size();
-		if(size > 0) list.get(size - 1).click();
-		Thread.sleep(4000);
+		return dictaHitsList;
 	}
 
+	private String getText(int instance) throws InterruptedException {
+		List<WebElement> instancesListLocal = ew.awaitList(instancesList, MAXWAIT);
+		List<WebElement> textBlocks = instancesListLocal.get(instance).findElements(By.xpath(".//div[@class='sentence-holder']"));
+		textBlocks = ew.awaitList(textBlocks, MAXWAIT);
+		int textBlocksSize = textBlocks.size();
+		String output = "";
+		for(int i = 0; i < textBlocksSize; i++) {
+			output += textBlocks.get(i).getText();
+			output += " ";
+		}
+		
+		return output;
+}
+
+	private String[] getNameDafAmud(List<WebElement> summaryListLocal, int instance) {
+		String[] output = new String[4];
+
+		String masechta = "";
+		String daf = "";
+		String amud = "";
+		String location = "";
+		String[] instanceTextArray = summaryListLocal.get(instance).getText().split(" ");
+		int instanceTextArrayLength = instanceTextArray.length;
+		masechta = instanceTextArray[6];
+		// special case of masechtos with two-word names
+		if (masechta.equals("בבא") || masechta.contentEquals("מועד") || masechta.contentEquals("ראש")
+				|| masechta.contentEquals("עבודה"))
+			masechta += " " + instanceTextArray[7];
+
+		location = instanceTextArray[instanceTextArrayLength - 1];
+		String[] dafAndAmud = location.split(",");
+		daf = dafAndAmud[0].trim();
+		amud = dafAndAmud[1].trim();
+		output[0] = masechta;
+		output[1] = daf;
+		output[2] = amud;
+		output[3] = "";
+		return output;
+	}
+
+	private int targetPhraseFound(String[] targetPhraseArray, String[] unprocessedTextArray) {
+		int targetPhraseLength = targetPhraseArray.length;
+		int unprocessedTextLength = unprocessedTextArray.length;
+		int lastUnprocessedWordToCheck = unprocessedTextLength - 1 - targetPhraseLength;
+
+		for (int unprocessedWord = 0; unprocessedWord < lastUnprocessedWordToCheck; unprocessedWord++) {
+			String[] textToCheck = new String[targetPhraseLength];
+			for (int wordToCheck = 0; wordToCheck < targetPhraseLength; wordToCheck++) {
+				textToCheck[wordToCheck] = unprocessedTextArray[unprocessedWord + wordToCheck];
+				if (textToCheck.equals(targetPhraseArray))
+					return unprocessedWord;
+			}
+		}
+		return -1;
+	}
+
+	private void clickNextPageButton() throws InterruptedException {
+		List<WebElement> elements = ew.awaitList(pageNavigationButtons, MAXWAIT);
+		int size = elements.size();
+		int last = size - 1;
+		WebElement element = elements.get(last);
+		element.click();
+		
+	}
+
+	private int getNumDictaPages(int numHits) {
+		int numPages = numHits / 10;
+		int hitsLeftOver = numHits % 10;
+		if (hitsLeftOver > 0)
+			numPages++;
+		return numPages;
+	}
 
 }

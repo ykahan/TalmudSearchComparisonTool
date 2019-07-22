@@ -6,11 +6,11 @@ public class Hit {
 	String daf;
 	String amud;
 	
-	public Hit(String text, String masechta, String daf, String amud) {
-		this.text = text;
+	public Hit(String masechta, String daf, String amud, String text) {
 		this.masechta = masechta;
 		this.daf = daf;
 		this.amud = amud;
+		this.text = text;
 	}
 	
 	public String getText() {

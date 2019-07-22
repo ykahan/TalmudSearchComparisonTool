@@ -29,7 +29,7 @@ public class DictaMachinery {
 	private static int getNumHitsFound() {
 		String hitsFound = repo.getNumHitsFound();
 		String[] hitsFoundArray = hitsFound.split(" ");
-		System.out.println(hitsFoundArray[5]);
+		System.out.println("Elements found: " + hitsFoundArray[5]);
 		return Integer.parseInt(hitsFoundArray[5]);
 	}
 
@@ -57,8 +57,7 @@ public class DictaMachinery {
 		return url;
 	}
 
-	public List<Hit> getListHits(int numHits) throws InterruptedException {
-		List<Hit> dictaHitsList = repo.getHitsList(numHits);
-		return null;
+	public List<Hit> getListHits(String targetPhrase, int numHits) throws InterruptedException {
+		return repo.getHitsList(targetPhrase, numHits);
 	}
 }

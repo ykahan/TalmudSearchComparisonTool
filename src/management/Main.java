@@ -26,7 +26,16 @@ public class Main {
 		System.out.println("Target phrase is {" + targetPhrase + "}");
 		DictaMachinery dm = new DictaMachinery(driver, MAXWAIT);
 		int numDictaResults = dm.getNumResults(targetPhrase);
-		List<Hit> dictaHits = dm.getListHits(numDictaResults);
+		List<Hit> dictaHits = dm.getListHits(targetPhrase, numDictaResults);
+		int size = dictaHits.size();
+		for(int i = 0; i < size; i++) {
+			System.out.println("\nHit #" + (i + 1));
+			System.out.println("Masechta: " + dictaHits.get(i).getMasechta());
+			System.out.println("Daf: " + dictaHits.get(i).getDaf());
+			System.out.println("Amud: " + dictaHits.get(i).getAmud());
+			System.out.println("Text: " + dictaHits.get(i).getText());
+			System.out.println("========================================");
+		}
 		driver.close();
 	}
 

@@ -19,7 +19,6 @@ public class ExplicitlyWait {
 	
 	public WebElement awaitElement(WebElement element, int timeout) {
 		WebElement newElement = null;
-		System.out.println("MAXWAIT: {" + timeout + "}");
 		try {
 			WebDriverWait wait = new WebDriverWait(driver, timeout);
 			newElement = wait.until(ExpectedConditions.elementToBeClickable(element));
