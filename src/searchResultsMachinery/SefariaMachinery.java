@@ -1,8 +1,10 @@
 package searchResultsMachinery;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import pageRepositories.SefariaRepo;
 
@@ -24,13 +26,7 @@ public class SefariaMachinery {
 		return repo.getNumResults();
 	}
 
-	private void goToSefariaSearch(String targetPhrase) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public List<Hit> getListHits(String targetPhrase, int numSefariaResults) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Hit> getListHits(String targetPhrase, int numSefariaResults) throws InterruptedException {
+		return repo.getListHits(targetPhrase, numSefariaResults);
 	}
 }

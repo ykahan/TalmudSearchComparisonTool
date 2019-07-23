@@ -35,6 +35,7 @@ public class ExplicitlyWait {
 		int waitPerCheck = 500; // time in milliseconds to wait between checks
 		int totalTimeToWait = timeout * 1000; // timeout converted to milliseconds
 		int cycles = totalTimeToWait / waitPerCheck;
+//		Thread.sleep(10000); // waiting for partial list loading
 		for(int i = 0; i < cycles; i++) {
 			size = list.size();
 			if(size > 0) {
