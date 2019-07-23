@@ -110,15 +110,19 @@ public class SefariaRepo {
 	}
 	
 	public List<Hit> getListAlternateHits(String targetPhrase, int numSefariaResults) throws InterruptedException {
-		List<WebElement> otherVersions = ew.awaitList(girsaNosefetList, MAXWAIT);
-		int size = otherVersions.size();
-		for(int current = 0; current < size; current++) {
-			otherVersions.get(current).click();
-		}
+		List<WebElement> alternateTexts = ew.awaitList(girsaNosefetList, MAXWAIT);
+		int size = alternateTexts.size();
+		openAlternateTexts(alternateTexts, size);
 		return null;
 	}
 
-	public List<Hit> getListHits(String targetPhrase, int numSefariaResults) throws InterruptedException {
+	private void openAlternateTexts(List<WebElement> otherVersions, int size) {
+		for(int current = 0; current < size; current++) {
+			otherVersions.get(current).click();
+		}
+	}
+
+	public List<Hit> getMainListHits(String targetPhrase, int numSefariaResults) throws InterruptedException {
 		List<Hit> output = new ArrayList<Hit>();
 		// only the first 50 elements of the list load until the user gets to
 		// the bottom of the page

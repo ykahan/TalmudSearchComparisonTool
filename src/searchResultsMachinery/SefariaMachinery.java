@@ -30,7 +30,7 @@ public class SefariaMachinery {
 	}
 
 	public List<Hit> getListHits(String targetPhrase, int numSefariaResults) throws InterruptedException {
-		return repo.getListHits(targetPhrase, numSefariaResults);
+		return repo.getMainListHits(targetPhrase, numSefariaResults);
 	}
 
 	public List<Hit> getListAlternateHits(String targetPhrase, int numSefariaResults) throws InterruptedException {
