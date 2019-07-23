@@ -45,8 +45,12 @@ public class SefariaRepo {
 
 	@FindBy(xpath = "//div[@class='result text_result']")
 	List<WebElement> resultsList;
+	
+	@FindBy(xpath = "//div[@class='contentText snippet he']")
+	List<WebElement> textsList;
 
-	@FindBy(xpath = "//span[@class='similar-title int-he']")
+//	@FindBy(xpath = "//span[@class='similar-title int-he']")
+	@FindBy (xpath = "//div[@class = 'similar-trigger-box']")
 	List<WebElement> girsaNosefetList;
 
 	@FindBy(xpath = "//div[@class='result-title']")
@@ -87,6 +91,7 @@ public class SefariaRepo {
 	}
 
 	public int getNumResults() throws InterruptedException {
+		Thread.sleep(500);
 		List<WebElement> localResultsReports = ew.awaitList(resultsReports, MAXWAIT);
 		String totalResultsMessage = localResultsReports.get(0).getText();
 		totalResultsMessage = totalResultsMessage.replaceAll("[^\\d]", "");
@@ -97,17 +102,22 @@ public class SefariaRepo {
 		List<WebElement> localResultsList = ew.awaitList(resultsList, MAXWAIT);
 		return localResultsList;
 	}
+	
+	public List<Hit> getListAlternateHits(String targetPhrase, int numSefariaResults) throws InterruptedException {
+		List<WebElement> otherVersions = ew.awaitList(girsaNosefetList, MAXWAIT);
+		int size = otherVersions.size();
+		for(int current = 0; current < size; current++) {
+			otherVersions.get(current).click();
+		}
+		Thread.sleep(20000);
+		return null;
+	}
 
 	public List<Hit> getListHits(String targetPhrase, int numSefariaResults) throws InterruptedException {
-		
-		// the list sometimes only loads partially, until such time as the user
-		// scrolls down. 
-		int timesToScrollDown = (numSefariaResults / 50);
-		System.out.println("timeToScrollDown: " + timesToScrollDown);
-		for(int i = 0; i < timesToScrollDown; i++) {
-			scrollToBottom();
-		}
-//		scrollToTop();
+		List<Hit> output = new ArrayList<Hit>();
+		// only the first 50 elements of the list load until the user gets to
+		// the bottom of the page
+		makeListFinishLoading(numSefariaResults);
 		
 		List<WebElement> blocksFound = getResultsList();
 		List<WebElement> localLocationDataList = ew.awaitList(locationDataList, MAXWAIT);
@@ -115,23 +125,33 @@ public class SefariaRepo {
 		int numBlocksFound = blocksFound.size();
 		int numLocationData = localLocationDataList.size();
 		
-		System.out.println("Blocks Found: " + numBlocksFound + "\nLocation Data Found: " + numLocationData);
 		for (int current = 0; current < numBlocksFound; current++) {
-			String masechta = "";
-			String daf = "";
-			String amud = "";
-			String text = "";
 
 			String[] locationDataArray = getlocationDataArray(localLocationDataList, current);
-			masechta = locationDataArray[0];
-			daf = locationDataArray[1];
-			amud = locationDataArray[2];
-
-			System.out.println(
-					"Instance #" + (current + 1) + "\nMasechta: " + masechta + "\nDaf: " + daf + "\nAmud: " + amud);
-			System.out.println("****************************************");
+			String masechta = locationDataArray[0];
+			String daf = locationDataArray[1];
+			String amud = locationDataArray[2];
+			String text = getInstanceText(current);
+			
+			Hit hit = new Hit(masechta, daf, amud, text);
+			output.add(hit);
 		}
-		return null;
+		return output;
+	}
+	
+	private String getInstanceText(int current) throws InterruptedException {
+		List<WebElement> texts = ew.awaitList(textsList, MAXWAIT);
+		String text = texts.get(current).getText();
+		return text;
+	}
+
+
+	private void makeListFinishLoading(int numSefariaResults) throws InterruptedException {
+		int timesToScrollDown = (numSefariaResults / 50);
+		for(int i = 0; i < timesToScrollDown; i++) {
+			scrollToBottom();
+			Thread.sleep(500);
+		}
 	}
 
 	private String[] getlocationDataArray(List<WebElement> localLocationDataList, int current) {

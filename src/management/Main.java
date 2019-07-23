@@ -25,15 +25,31 @@ public class Main {
 		driver = Setup.setupDriver("Chrome");
 		System.out.println("Target phrase is {" + targetPhrase + "}");
 
-//		DictaMachinery dm = new DictaMachinery(driver, MAXWAIT);
-//		int numDictaResults = dm.getNumResults(targetPhrase);
-//		List<Hit> dictaHits = dm.getListHits(targetPhrase, numDictaResults);
-//		int size = dictaHits.size();
+		DictaMachinery dm = new DictaMachinery(driver, MAXWAIT);
+		int numDictaResults = dm.getNumResults(targetPhrase);
+		List<Hit> dictaHits = dm.getListHits(targetPhrase, numDictaResults);
+		int dictaSize = dictaHits.size();
 
 		SefariaMachinery sm = new SefariaMachinery(driver, MAXWAIT);
 		int numSefariaResults = sm.getNumResults(targetPhrase);
-		List<Hit> sefariaHits = sm.getListHits(targetPhrase, numSefariaResults);
 		System.out.println("Sefaria # Results: {" + numSefariaResults + "}");
+
+		List<Hit> mainSefariaHits = sm.getListHits(targetPhrase, numSefariaResults);
+		int sefariaSize = mainSefariaHits.size();
+		
+		List<Hit> alternateSefariaHits = sm.getListAlternateHits(targetPhrase, numSefariaResults);
+//		for(int i = 0; i < size; i++) {
+//			Hit hit = sefariaHits.get(i);
+//			System.out.println(
+//					"Instance #" + (i + 1) + 
+//					"\nMasechta: " + hit.getMasechta() + 
+//					"\nDaf: " + hit.getDaf() + 
+//					"\nAmud: " + hit.getAmud() +
+//					"\nText: "+ hit.getText());
+//			System.out.println("****************************************");
+//		}
+		System.out.println("Dicta Hits: " + dictaSize);
+		System.out.println("Sefaria Hits: " + sefariaSize);
 		driver.close();
 	}
 

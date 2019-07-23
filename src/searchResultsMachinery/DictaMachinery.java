@@ -29,7 +29,6 @@ public class DictaMachinery {
 	private static int getNumHitsFound() {
 		String hitsFound = repo.getNumHitsFound();
 		String[] hitsFoundArray = hitsFound.split(" ");
-		System.out.println("Elements found: " + hitsFoundArray[5]);
 		return Integer.parseInt(hitsFoundArray[5]);
 	}
 
