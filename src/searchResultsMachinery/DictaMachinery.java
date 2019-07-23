@@ -19,14 +19,13 @@ public class DictaMachinery {
 		this.MAXWAIT = MAXWAIT;
 		DictaMachinery.repo = new DictaRepo(driver, MAXWAIT);
 	}
-
-	public int getNumResults(String targetPhrase) throws InterruptedException {
+	
+	public void goToDictaTalmudSearch(String targetPhrase) throws InterruptedException {
 		goToTalmudSearch(targetPhrase);
 		waitForSkip();
-		return getNumHitsFound();
 	}
 
-	private static int getNumHitsFound() {
+	public int getNumResults() {
 		String hitsFound = repo.getNumHitsFound();
 		String[] hitsFoundArray = hitsFound.split(" ");
 		return Integer.parseInt(hitsFoundArray[5]);

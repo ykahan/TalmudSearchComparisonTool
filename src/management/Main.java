@@ -26,11 +26,14 @@ public class Main {
 		System.out.println("Target phrase is {" + targetPhrase + "}");
 
 		DictaMachinery dm = new DictaMachinery(driver, MAXWAIT);
-		int numDictaResults = dm.getNumResults(targetPhrase);
+		dm.goToDictaTalmudSearch(targetPhrase);
+		int numDictaResults = dm.getNumResults();
 		List<Hit> dictaHits = dm.getListHits(targetPhrase, numDictaResults);
 		int dictaSize = dictaHits.size();
 
 		SefariaMachinery sm = new SefariaMachinery(driver, MAXWAIT);
+		sm.goToSefaria();
+		sm.closeCookieNotification();
 		int numSefariaResults = sm.getNumResults(targetPhrase);
 		System.out.println("Sefaria # Results: {" + numSefariaResults + "}");
 

@@ -47,18 +47,24 @@ public class SefariaRepo {
 	List<WebElement> resultsList;
 	
 	@FindBy(xpath = "//div[@class='contentText snippet he']")
-	List<WebElement> textsList;
+	List<WebElement> mainTextsList;
 
 //	@FindBy(xpath = "//span[@class='similar-title int-he']")
 	@FindBy (xpath = "//div[@class = 'similar-trigger-box']")
 	List<WebElement> girsaNosefetList;
 
 	@FindBy(xpath = "//div[@class='result-title']")
-	List<WebElement> locationDataList;
+	List<WebElement> mainLocationDataList;
 	
 	@FindBy (xpath = "//body")
 	WebElement body;
+	
+	@FindBy (xpath = "//span[@class = 'int-he button small white']")
+	WebElement closeCookieNotificationButton;
 
+	@FindBy (xpath = "//div[@class='similar-results']//span[@class = 'int-he']")
+	List<WebElement> alternateLocationDataList;
+	
 	public void goToSefaria() {
 		driver.get(sefariaUrl);
 	}
@@ -109,7 +115,6 @@ public class SefariaRepo {
 		for(int current = 0; current < size; current++) {
 			otherVersions.get(current).click();
 		}
-		Thread.sleep(20000);
 		return null;
 	}
 
@@ -120,27 +125,34 @@ public class SefariaRepo {
 		makeListFinishLoading(numSefariaResults);
 		
 		List<WebElement> blocksFound = getResultsList();
-		List<WebElement> localLocationDataList = ew.awaitList(locationDataList, MAXWAIT);
+		List<WebElement> localLocationDataList = ew.awaitList(mainLocationDataList, MAXWAIT);
+		List<WebElement> localTextsList = ew.awaitList(mainTextsList, MAXWAIT);
 
 		int numBlocksFound = blocksFound.size();
 		int numLocationData = localLocationDataList.size();
 		
+		extractHitData(output, localLocationDataList, localTextsList, numBlocksFound);
+		return output;
+	}
+
+	private void extractHitData(List<Hit> output, List<WebElement> localLocationDataList,
+			List<WebElement> localTextsList, int numBlocksFound) throws InterruptedException {
 		for (int current = 0; current < numBlocksFound; current++) {
 
 			String[] locationDataArray = getlocationDataArray(localLocationDataList, current);
+
 			String masechta = locationDataArray[0];
 			String daf = locationDataArray[1];
 			String amud = locationDataArray[2];
-			String text = getInstanceText(current);
+			String text = getInstanceText(localTextsList, current);
 			
 			Hit hit = new Hit(masechta, daf, amud, text);
 			output.add(hit);
 		}
-		return output;
 	}
 	
-	private String getInstanceText(int current) throws InterruptedException {
-		List<WebElement> texts = ew.awaitList(textsList, MAXWAIT);
+	private String getInstanceText(List<WebElement> givenTextsList, int current) throws InterruptedException {
+		List<WebElement> texts = ew.awaitList(givenTextsList, MAXWAIT);
 		String text = texts.get(current).getText();
 		return text;
 	}
@@ -150,7 +162,7 @@ public class SefariaRepo {
 		int timesToScrollDown = (numSefariaResults / 50);
 		for(int i = 0; i < timesToScrollDown; i++) {
 			scrollToBottom();
-			Thread.sleep(500);
+			Thread.sleep(1000);
 		}
 	}
 
@@ -190,5 +202,10 @@ public class SefariaRepo {
 	private void scrollToBottom() {
 		String scrollDown = Keys.chord(Keys.END);
 		body.sendKeys(scrollDown);		
+	}
+
+	public void closeCookieNotification() {
+		WebElement element = ew.awaitElement(closeCookieNotificationButton, MAXWAIT);
+		element.click();
 	}
 }

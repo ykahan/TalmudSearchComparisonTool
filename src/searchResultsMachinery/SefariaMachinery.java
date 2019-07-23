@@ -20,10 +20,13 @@ public class SefariaMachinery {
 	}
 
 	public int getNumResults(String targetPhrase) throws InterruptedException {
-		repo.goToSefaria();
 		repo.loadTargetPhrase(targetPhrase);
 		repo.filterResults();
 		return repo.getNumResults();
+	}
+	
+	public void goToSefaria() {
+		repo.goToSefaria();
 	}
 
 	public List<Hit> getListHits(String targetPhrase, int numSefariaResults) throws InterruptedException {
@@ -32,5 +35,9 @@ public class SefariaMachinery {
 
 	public List<Hit> getListAlternateHits(String targetPhrase, int numSefariaResults) throws InterruptedException {
 		return repo.getListAlternateHits(targetPhrase, numSefariaResults);
+	}
+
+	public void closeCookieNotification() {
+		repo.closeCookieNotification();		
 	}
 }
