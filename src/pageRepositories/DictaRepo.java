@@ -17,7 +17,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,56 +104,6 @@ public class DictaRepo {
 		return text;
 	}
 
-//	public List<Hit> getHitsList(String targetPhrase, int numHits) throws InterruptedException {
-//		List<WebElement> foundList = ew.awaitList(hitsList, MAXWAIT);
-//		int foundListSize = foundList.size();
-//		
-//		String[] targetPhraseArray = targetPhrase.split(" ");
-//		int targetPhraseLength = targetPhraseArray.length;
-//		
-//		int numScanned = 0;
-//		
-//		List<Hit> output = new ArrayList<Hit>();
-//		
-//		for(int hit = 0; hit < foundListSize; hit++) {
-//			String masechta = "";
-//			String daf = "";
-//			String amud = "";
-//			String text = "";
-//			
-//			String unprocessedText = foundList.get(hit).getText();
-//			String[] unprocessedTextArray = unprocessedText.split(" ");
-//			int unprocessedTextLength = unprocessedTextArray.length;
-//			int startTargetPhrase = targetPhraseFound(targetPhraseArray, unprocessedTextArray);
-//
-//			for(int word = 0; word < unprocessedTextLength; word++) {
-//				if (unprocessedTextArray[word] == "מסכת") masechta = unprocessedTextArray[word + 1];
-//				if(unprocessedTextArray[word] == "דף") {
-//					daf = unprocessedTextArray[word + 1];
-//					amud = unprocessedTextArray[word + 2];
-//					amud = amud.substring(1);  // getting rid of the comma
-//				}
-//				
-//			}
-//			
-//			if(startTargetPhrase > -1) {
-//				for(int word = 0; word < targetPhraseLength + 3 && word < unprocessedTextLength; word++) {
-//					text += word + " ";
-//				}
-//				text = text.substring(0, text.length() - 1); // getting rid of the extra space
-//			}
-//			
-//			Hit instance = new Hit(text, masechta, daf, amud);
-//			output.add(instance);
-//			
-//			numScanned++;
-//			if(hit == (foundListSize - 1) && numScanned < numHits) {
-//				clickNextPageButton();
-//			}
-//		}
-//		return output;
-//	}
-
 	public List<Hit> getHitsList(String targetPhrase, int numHits) throws InterruptedException {
 		int numDictaPages = getNumDictaPages(numHits);
 		List<Hit> dictaHitsList = new ArrayList<Hit>();
@@ -172,6 +121,8 @@ public class DictaRepo {
 				nameDafAmudText[3] = getText(instance);
 				
 				String name = nameDafAmudText[0];
+				// source material gives "Terumah" for "Temurah"
+				if(name.contentEquals("תרומה")) name = "תמורה";
 				String daf = nameDafAmudText[1];
 				String amud = nameDafAmudText[2];
 				String text = nameDafAmudText[3];

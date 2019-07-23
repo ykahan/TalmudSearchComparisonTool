@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 
 import searchResultsMachinery.DictaMachinery;
 import searchResultsMachinery.Hit;
+import searchResultsMachinery.SefariaMachinery;
 
 public class Main {
 	final static int MAXWAIT = 10; // maximum seconds to wait for element to appear
@@ -21,21 +22,18 @@ public class Main {
 //		System.out.println("Target phrase:");
 //		targetPhrase = scanner.nextLine();
 		targetPhrase = "היינו תנא קמא";  // phrase hard-coded for ease of testing
-		
 		driver = Setup.setupDriver("Chrome");
 		System.out.println("Target phrase is {" + targetPhrase + "}");
-		DictaMachinery dm = new DictaMachinery(driver, MAXWAIT);
-		int numDictaResults = dm.getNumResults(targetPhrase);
-		List<Hit> dictaHits = dm.getListHits(targetPhrase, numDictaResults);
-		int size = dictaHits.size();
-		for(int i = 0; i < size; i++) {
-			System.out.println("\nHit #" + (i + 1));
-			System.out.println("Masechta: " + dictaHits.get(i).getMasechta());
-			System.out.println("Daf: " + dictaHits.get(i).getDaf());
-			System.out.println("Amud: " + dictaHits.get(i).getAmud());
-			System.out.println("Text: " + dictaHits.get(i).getText());
-			System.out.println("========================================");
-		}
+
+//		DictaMachinery dm = new DictaMachinery(driver, MAXWAIT);
+//		int numDictaResults = dm.getNumResults(targetPhrase);
+//		List<Hit> dictaHits = dm.getListHits(targetPhrase, numDictaResults);
+//		int size = dictaHits.size();
+
+		SefariaMachinery sm = new SefariaMachinery(driver, MAXWAIT);
+		int numSefariaResults = sm.getNumResults(targetPhrase);
+		List<Hit> sefariaHits = sm.getListHits(targetPhrase, numSefariaResults);
+		System.out.println("Sefaria # Results: {" + numSefariaResults + "}");
 		driver.close();
 	}
 
