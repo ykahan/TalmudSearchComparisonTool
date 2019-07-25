@@ -41,18 +41,19 @@ public class Main {
 		int sefariaSize = mainSefariaHits.size();
 		
 		List<Hit> alternateSefariaHits = sm.getListAlternateHits(targetPhrase, numSefariaResults);
-//		for(int i = 0; i < size; i++) {
-//			Hit hit = sefariaHits.get(i);
-//			System.out.println(
-//					"Instance #" + (i + 1) + 
-//					"\nMasechta: " + hit.getMasechta() + 
-//					"\nDaf: " + hit.getDaf() + 
-//					"\nAmud: " + hit.getAmud() +
-//					"\nText: "+ hit.getText());
-//			System.out.println("****************************************");
-//		}
+
 		System.out.println("Dicta Hits: " + dictaSize);
+		for(int dictaHit = 0; dictaHit < dictaSize; dictaHit++) {
+			String desc = dictaHits.get(dictaHit).toString();
+			System.out.println("Dicta Hit #" + (dictaHit + 1));
+			System.out.println(desc);
+		}
 		System.out.println("Sefaria Hits: " + sefariaSize);
+		for(int sefariaHit = 0; sefariaHit < sefariaSize; sefariaHit++) {
+			String desc = mainSefariaHits.get(sefariaHit).toString();
+			System.out.println("Sefaria Hit #" + (sefariaHit + 1));
+			System.out.println(desc);
+		}
 		driver.close();
 	}
 

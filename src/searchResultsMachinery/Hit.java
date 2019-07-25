@@ -31,11 +31,11 @@ public class Hit {
 	
 	@Override
 	public String toString() {
-		int length = this.text.length();
+//		int length = this.masechta.length() + this.daf.length() + this.amud.length();
 		StringBuilder sb = new StringBuilder();
 		sb.append("Text: " + getText() + "\n");
 		sb.append("Location: " + getMasechta() + " " + getDaf() + " " + getAmud() + "\n");
-		for(int i = 0; i < (length * 1.5); i++) {
+		for(int i = 0; i < 40; i++) {
 			sb.append("-");
 		}
 		return sb.toString();
