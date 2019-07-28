@@ -45,26 +45,34 @@ public class SefariaRepo {
 
 	@FindBy(xpath = "//div[@class='result text_result']")
 	List<WebElement> resultsList;
-	
+
 	@FindBy(xpath = "//div[@class='contentText snippet he']")
 	List<WebElement> mainTextsList;
 
-//	@FindBy(xpath = "//span[@class='similar-title int-he']")
-	@FindBy (xpath = "//div[@class = 'similar-trigger-box']")
+	@FindBy(xpath = "//div[@class = 'similar-trigger-box']")
 	List<WebElement> girsaNosefetList;
 
 	@FindBy(xpath = "//div[@class='result-title']")
 	List<WebElement> mainLocationDataList;
-	
-	@FindBy (xpath = "//body")
+
+	@FindBy(xpath = "//body")
 	WebElement body;
-	
-	@FindBy (xpath = "//span[@class = 'int-he button small white']")
+
+	@FindBy(xpath = "//span[@class = 'int-he button small white']")
 	WebElement closeCookieNotificationButton;
 
-	@FindBy (xpath = "//div[@class='similar-results']//span[@class = 'int-he']")
+	@FindBy(xpath = "//div[@class='similar-results']//span[@class = 'int-he']")
 	List<WebElement> alternateLocationDataList;
-	
+
+	@FindBy(xpath = "//div[@class='similar-results']")
+	List<WebElement> alternateGirsaBlocks;
+
+	@FindBy(xpath = "//div[@class='similar-results']//span[@class='int-he']")
+	List<WebElement> alternateGirsaLocationDataList;
+
+	@FindBy(xpath = "//div[@class='similar-results']//div[@class='contentText snippet he']")
+	List<WebElement> alternateGirsaTextList;
+
 	public void goToSefaria() {
 		driver.get(sefariaUrl);
 	}
@@ -108,39 +116,57 @@ public class SefariaRepo {
 		List<WebElement> localResultsList = ew.awaitList(resultsList, MAXWAIT);
 		return localResultsList;
 	}
-	
-	public List<Hit> getListAlternateHits(String targetPhrase, int numSefariaResults) throws InterruptedException {
-		List<WebElement> alternateTexts = ew.awaitList(girsaNosefetList, MAXWAIT);
-		int size = alternateTexts.size();
-		openAlternateTexts(alternateTexts, size);
-		return null;
+
+	private List<WebElement> getAlternateTextBlocks() throws InterruptedException {
+		List<WebElement> alternateTextBlocksList = ew.awaitList(alternateGirsaBlocks, MAXWAIT);
+		return alternateTextBlocksList;
 	}
 
 	private void openAlternateTexts(List<WebElement> otherVersions, int size) {
-		for(int current = 0; current < size; current++) {
+		for (int current = 0; current < size; current++) {
 			otherVersions.get(current).click();
 		}
 	}
 
 	public List<Hit> getMainListHits(String targetPhrase, int numSefariaResults) throws InterruptedException {
-		List<Hit> output = new ArrayList<Hit>();
 		// only the first 50 elements of the list load until the user gets to
 		// the bottom of the page
 		makeListFinishLoading(numSefariaResults);
-		
+
 		List<WebElement> blocksFound = getResultsList();
 		List<WebElement> localLocationDataList = ew.awaitList(mainLocationDataList, MAXWAIT);
 		List<WebElement> localTextsList = ew.awaitList(mainTextsList, MAXWAIT);
 
 		int numBlocksFound = blocksFound.size();
-		int numLocationData = localLocationDataList.size();
-		
-		extractHitData(output, localLocationDataList, localTextsList, numBlocksFound);
+
+		List<Hit> output = extractHitData(localLocationDataList, localTextsList, numBlocksFound);
 		return output;
 	}
 
-	private void extractHitData(List<Hit> output, List<WebElement> localLocationDataList,
-			List<WebElement> localTextsList, int numBlocksFound) throws InterruptedException {
+	public List<Hit> getListAlternateHits(String targetPhrase, int numSefariaResults) throws InterruptedException {
+		List<WebElement> alternateTexts = ew.awaitList(girsaNosefetList, MAXWAIT);
+		int size = alternateTexts.size();
+		openAlternateTexts(alternateTexts, size);
+		List<WebElement> alternateGirsaLocationDataList = getAlternateGirsaLocationData();
+		List<WebElement> alternateGirsaTextList = getAlternateGirsaTexts();
+		int numAltGirsaos = alternateGirsaLocationDataList.size();
+		
+		return null;
+	}
+	
+	private List<WebElement> getAlternateGirsaTexts() throws InterruptedException {
+		List<WebElement> altGirsaTextList = ew.awaitList(alternateGirsaTextList, MAXWAIT);
+		return altGirsaTextList;
+	}
+
+	private List<WebElement> getAlternateGirsaLocationData() throws InterruptedException {
+		List<WebElement> altGirsaLocationDataList = ew.awaitList(alternateGirsaLocationDataList, MAXWAIT);
+		return altGirsaLocationDataList;
+	}
+
+	private List<Hit> extractHitData(List<WebElement> localLocationDataList, List<WebElement> localTextsList,
+			int numBlocksFound) throws InterruptedException {
+		List<Hit> output = new ArrayList<Hit>();
 		for (int current = 0; current < numBlocksFound; current++) {
 
 			String[] locationDataArray = getlocationDataArray(localLocationDataList, current);
@@ -149,22 +175,22 @@ public class SefariaRepo {
 			String daf = locationDataArray[1];
 			String amud = locationDataArray[2];
 			String text = getInstanceText(localTextsList, current);
-			
+
 			Hit hit = new Hit(masechta, daf, amud, text);
 			output.add(hit);
 		}
+		return output;
 	}
-	
+
 	private String getInstanceText(List<WebElement> givenTextsList, int current) throws InterruptedException {
 		List<WebElement> texts = ew.awaitList(givenTextsList, MAXWAIT);
 		String text = texts.get(current).getText();
 		return text;
 	}
 
-
 	private void makeListFinishLoading(int numSefariaResults) throws InterruptedException {
 		int timesToScrollDown = (numSefariaResults / 50);
-		for(int i = 0; i < timesToScrollDown; i++) {
+		for (int i = 0; i < timesToScrollDown; i++) {
 			scrollToBottom();
 			Thread.sleep(1000);
 		}
@@ -175,7 +201,7 @@ public class SefariaRepo {
 		String masechta = "";
 		String daf = "";
 		String amud = "";
-		
+
 		masechta = locationDataArray[0];
 		boolean doubleName = (masechta.contentEquals("בבא") || masechta.contentEquals("מועד")
 				|| masechta.contentEquals("עבודה"));
@@ -192,20 +218,20 @@ public class SefariaRepo {
 
 		String[] amudArray = amud.split(":");
 		amud = amudArray[0];
-		
-		String[] output = {masechta, daf, amud};
+
+		String[] output = { masechta, daf, amud };
 		return output;
 	}
 
 	private void scrollToTop() {
 		String scrollUp = Keys.chord(Keys.HOME);
 		body.sendKeys(scrollUp);
-		
+
 	}
 
 	private void scrollToBottom() {
 		String scrollDown = Keys.chord(Keys.END);
-		body.sendKeys(scrollDown);		
+		body.sendKeys(scrollDown);
 	}
 
 	public void closeCookieNotification() {

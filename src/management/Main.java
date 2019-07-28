@@ -42,7 +42,7 @@ public class Main {
 		
 		List<Hit> alternateSefariaHits = sm.getListAlternateHits(targetPhrase, numSefariaResults);
 
-		System.out.println("Dicta Hits: " + dictaSize);
+		System.out.println("Dicta # Hits: {" + dictaSize + "}\n");
 		for(int dictaHit = 0; dictaHit < dictaSize; dictaHit++) {
 			String desc = dictaHits.get(dictaHit).toString();
 			System.out.println("Dicta Hit #" + (dictaHit + 1));
