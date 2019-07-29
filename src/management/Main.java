@@ -36,7 +36,8 @@ public class Main {
 		sm.goToSefaria();
 		sm.closeCookieNotification();
 		int numSefariaResults = sm.getNumResults(targetPhrase);
-		System.out.println("Sefaria # Results: {" + numSefariaResults + "}");
+	
+		System.out.println("Sefaria # Results (in total): {" + numSefariaResults + "}");
 
 		List<Hit> mainSefariaHits = sm.getListHits(targetPhrase, numSefariaResults);
 		HitList mainSefaria = new HitList(mainSefariaHits, "Main Sefaria");
@@ -52,7 +53,7 @@ public class Main {
 
 		int totalSefariaHits = sefariaSize + altSize;
 		boolean rightNumHits = (totalSefariaHits == numSefariaResults);
-		System.out.println("Total Hits equals all results: " + rightNumHits);
+		System.out.println("Total Sefaria Hits equals all Sefaria results: " + rightNumHits);
 
 		driver.close();
 	}
