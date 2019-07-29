@@ -44,29 +44,12 @@ public class Main {
 		List<Hit> alternateSefariaHits = sm.getListAlternateHits(targetPhrase, numSefariaResults);
 		HitList alternateSefaria = new HitList(alternateSefariaHits, "Alt Girsa Sefaria");
 
-//		System.out.println("Dicta # Hits: {" + dictaSize + "}\n");
-//		for (int dictaHit = 0; dictaHit < dictaSize; dictaHit++) {
-//			String desc = dictaHits.get(dictaHit).toString();
-//			System.out.println("Dicta Hit #" + (dictaHit + 1));
-//			System.out.println(desc);
-//		}
 		dictaList.printString();
 		mainSefaria.printString();
 		alternateSefaria.printString();
 		int sefariaSize = mainSefaria.getSize();
 		int altSize = alternateSefaria.getSize();
-//		System.out.println("Sefaria Hits: " + sefariaSize);
-//		for (int sefariaHit = 0; sefariaHit < sefariaSize; sefariaHit++) {
-//			String desc = mainSefariaHits.get(sefariaHit).toString();
-//			System.out.println("Sefaria Hit #" + (sefariaHit + 1));
-//			System.out.println(desc);
-//		}
-//		System.out.println("Sefaria alternate Girsa Hits: " + altSize);
-//		for (int altGirsaHit = 0; altGirsaHit < altSize; altGirsaHit++) {
-//			String desc = alternateSefariaHits.get(altGirsaHit).toString();
-//			System.out.println("AlternateGirsa Hit #" + (altGirsaHit + 1));
-//			System.out.println(desc);
-//		}
+
 		int totalSefariaHits = sefariaSize + altSize;
 		boolean rightNumHits = (totalSefariaHits == numSefariaResults);
 		System.out.println("Total Hits equals all results: " + rightNumHits);
