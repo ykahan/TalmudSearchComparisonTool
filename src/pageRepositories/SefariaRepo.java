@@ -151,7 +151,9 @@ public class SefariaRepo {
 		List<WebElement> alternateGirsaTextList = getAlternateGirsaTexts();
 		int numAltGirsaos = alternateGirsaLocationDataList.size();
 		
-		return null;
+		List<Hit> output = extractHitData(alternateGirsaLocationDataList, alternateGirsaTextList, numAltGirsaos);
+		
+		return output;
 	}
 	
 	private List<WebElement> getAlternateGirsaTexts() throws InterruptedException {
@@ -204,7 +206,7 @@ public class SefariaRepo {
 
 		masechta = locationDataArray[0];
 		boolean doubleName = (masechta.contentEquals("בבא") || masechta.contentEquals("מועד")
-				|| masechta.contentEquals("עבודה"));
+				|| masechta.contentEquals("עבודה") || masechta.contentEquals("ראש"));
 		if (doubleName) {
 			masechta += " " + locationDataArray[1];
 			daf = locationDataArray[2];
