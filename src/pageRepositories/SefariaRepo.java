@@ -11,6 +11,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import management.ExplicitlyWait;
 import searchResultsMachinery.Hit;
+import searchResultsMachinery.SharedMachinery;
 
 public class SefariaRepo {
 	WebDriver driver;
@@ -150,12 +151,12 @@ public class SefariaRepo {
 		List<WebElement> alternateGirsaLocationDataList = getAlternateGirsaLocationData();
 		List<WebElement> alternateGirsaTextList = getAlternateGirsaTexts();
 		int numAltGirsaos = alternateGirsaLocationDataList.size();
-		
+
 		List<Hit> output = extractHitData(alternateGirsaLocationDataList, alternateGirsaTextList, numAltGirsaos);
-		
+
 		return output;
 	}
-	
+
 	private List<WebElement> getAlternateGirsaTexts() throws InterruptedException {
 		List<WebElement> altGirsaTextList = ew.awaitList(alternateGirsaTextList, MAXWAIT);
 		return altGirsaTextList;
@@ -169,19 +170,28 @@ public class SefariaRepo {
 	private List<Hit> extractHitData(List<WebElement> localLocationDataList, List<WebElement> localTextsList,
 			int numBlocksFound) throws InterruptedException {
 		List<Hit> output = new ArrayList<Hit>();
+		System.out.println("Extracting Sefaria Data...");
 		for (int current = 0; current < numBlocksFound; current++) {
+			if (notYerushalmi(localLocationDataList, current)) {
+				String[] locationDataArray = getlocationDataArray(localLocationDataList, current);
 
-			String[] locationDataArray = getlocationDataArray(localLocationDataList, current);
+				String masechta = locationDataArray[0];
+				String daf = locationDataArray[1];
+				String amud = locationDataArray[2];
+				String text = getInstanceText(localTextsList, current);
 
-			String masechta = locationDataArray[0];
-			String daf = locationDataArray[1];
-			String amud = locationDataArray[2];
-			String text = getInstanceText(localTextsList, current);
-
-			Hit hit = new Hit(masechta, daf, amud, text);
-			output.add(hit);
+				Hit hit = new Hit(masechta, daf, amud, text);
+				output.add(hit);
+				SharedMachinery.waiting(current);
+			}
 		}
 		return output;
+	}
+
+	private boolean notYerushalmi(List<WebElement> locationDataList, int current) {
+		String text = locationDataList.get(current).getText();
+		if(text.contains("תלמוד ירושלמי")) return false;
+		return true;
 	}
 
 	private String getInstanceText(List<WebElement> givenTextsList, int current) throws InterruptedException {
@@ -192,14 +202,18 @@ public class SefariaRepo {
 
 	private void makeListFinishLoading(int numSefariaResults) throws InterruptedException {
 		int timesToScrollDown = (numSefariaResults / 50);
+		System.out.println("Scrolling down through Sefaria results...");
 		for (int i = 0; i < timesToScrollDown; i++) {
 			scrollToBottom();
+			SharedMachinery.waiting(i);
 			Thread.sleep(1000);
+
 		}
 	}
 
 	private String[] getlocationDataArray(List<WebElement> localLocationDataList, int current) {
 		String[] locationDataArray = localLocationDataList.get(current).getText().split(" ");
+		System.out.println("locationDataArray established");
 		String masechta = "";
 		String daf = "";
 		String amud = "";
@@ -219,10 +233,31 @@ public class SefariaRepo {
 		daf = daf.replaceAll("׳", "");
 
 		String[] amudArray = amud.split(":");
+//		int amudLength = amud.length();
+//		amud = discardAfter(amud, ':');
 		amud = amudArray[0];
 
 		String[] output = { masechta, daf, amud };
+		System.out.println("output array established");
 		return output;
+	}
+
+	private String discardAfter(String givenString, char targetCharacter) {
+		int charLocation = getCharLocation(givenString, targetCharacter);
+		if (charLocation > -1) {
+			givenString = givenString.substring(0, charLocation);
+		}
+		return givenString;
+	}
+
+	private int getCharLocation(String givenString, char targetCharacter) {
+		int length = givenString.length();
+		for (int current = 0; current < length; current++) {
+			char character = givenString.charAt(current);
+			if (character == targetCharacter)
+				return current;
+		}
+		return -1;
 	}
 
 	private void scrollToTop() {

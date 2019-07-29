@@ -23,6 +23,7 @@ import java.util.List;
 
 import management.ExplicitlyWait;
 import searchResultsMachinery.Hit;
+import searchResultsMachinery.SharedMachinery;
 
 public class DictaRepo {
 	WebDriver driver;
@@ -53,8 +54,8 @@ public class DictaRepo {
 
 	@FindBy(xpath = "//ul[@id='pagination']//button")
 	List<WebElement> navigationButtons;
-	
-	@FindBy(xpath="//button[@class='pagination__navigation']")
+
+	@FindBy(xpath = "//button[@class='pagination__navigation']")
 	List<WebElement> pageNavigationButtons;
 
 	@FindBy(xpath = "//div[@class='result-li-top-section']")
@@ -62,7 +63,7 @@ public class DictaRepo {
 
 	@FindBy(xpath = "//div[@class='sentence-holder']")
 	List<WebElement> talmudTextList;
-	
+
 	public void sendPhrase(String targetPhrase) {
 		WebElement box = ew.awaitElement(searchBox, MAXWAIT);
 		WebElement button = ew.awaitElement(searchBoxButton, MAXWAIT);
@@ -107,8 +108,9 @@ public class DictaRepo {
 	public List<Hit> getHitsList(String targetPhrase, int numHits) throws InterruptedException {
 		int numDictaPages = getNumDictaPages(numHits);
 		List<Hit> dictaHitsList = new ArrayList<Hit>();
-		String[] nameDafAmudText = new String[4];;
-
+		String[] nameDafAmudText = new String[4];
+		
+		System.out.println("Getting Dicta Hits...");
 		for (int page = 0; page < numDictaPages; page++) {
 			List<WebElement> summaryListLocal = ew.awaitList(summaryList, MAXWAIT);
 
@@ -119,36 +121,40 @@ public class DictaRepo {
 				nameDafAmudText = getNameDafAmud(summaryListLocal, instance);
 				// getting text
 				nameDafAmudText[3] = getText(instance);
-				
+
 				String name = nameDafAmudText[0];
 				// source material gives "Terumah" for "Temurah"
-				if(name.contentEquals("תרומה")) name = "תמורה";
+				if (name.contentEquals("תרומה"))
+					name = "תמורה";
 				String daf = nameDafAmudText[1];
 				String amud = nameDafAmudText[2];
 				String text = nameDafAmudText[3];
-				
+
 				Hit hit = new Hit(name, daf, amud, text);
 				dictaHitsList.add(hit);
 				
+				SharedMachinery.waiting(instance);
+
 			}
-			clickNextPageButton();
+			if((page + 1) < numDictaPages) clickNextPageButton();
 		}
 		return dictaHitsList;
 	}
 
 	private String getText(int instance) throws InterruptedException {
 		List<WebElement> instancesListLocal = ew.awaitList(instancesList, MAXWAIT);
-		List<WebElement> textBlocks = instancesListLocal.get(instance).findElements(By.xpath(".//div[@class='sentence-holder']"));
+		List<WebElement> textBlocks = instancesListLocal.get(instance)
+				.findElements(By.xpath(".//div[@class='sentence-holder']"));
 		textBlocks = ew.awaitList(textBlocks, MAXWAIT);
 		int textBlocksSize = textBlocks.size();
 		String output = "";
-		for(int i = 0; i < textBlocksSize; i++) {
+		for (int i = 0; i < textBlocksSize; i++) {
 			output += textBlocks.get(i).getText();
 			output += " ";
 		}
-		
+
 		return output;
-}
+	}
 
 	private String[] getNameDafAmud(List<WebElement> summaryListLocal, int instance) {
 		String[] output = new String[4];
@@ -194,11 +200,13 @@ public class DictaRepo {
 
 	private void clickNextPageButton() throws InterruptedException {
 		List<WebElement> elements = ew.awaitList(pageNavigationButtons, MAXWAIT);
-		int size = elements.size();
-		int last = size - 1;
-		WebElement element = elements.get(last);
-		element.click();
-		
+		if (!elements.isEmpty()) {
+			int size = elements.size();
+			int last = size - 1;
+			WebElement element = elements.get(last);
+			element.click();
+		}
+
 	}
 
 	private int getNumDictaPages(int numHits) {
@@ -206,6 +214,7 @@ public class DictaRepo {
 		int hitsLeftOver = numHits % 10;
 		if (hitsLeftOver > 0)
 			numPages++;
+		System.out.println("Dicta pages: {" + numPages + "}");
 		return numPages;
 	}
 
