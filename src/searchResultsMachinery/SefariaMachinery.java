@@ -21,7 +21,8 @@ public class SefariaMachinery {
 
 	public int getNumResults(String targetPhrase) throws InterruptedException {
 		repo.loadTargetPhrase(targetPhrase);
-		repo.filterResults();
+		int unfilteredResults = repo.getNumResults();
+		if (unfilteredResults > 0) repo.filterResults();
 		return repo.getNumResults();
 	}
 	

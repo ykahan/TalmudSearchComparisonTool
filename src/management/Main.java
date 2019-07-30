@@ -30,23 +30,27 @@ public class Main {
 		dm.goToDictaTalmudSearch(targetPhrase);
 		int numDictaResults = dm.getNumResults();
 		System.out.println("Dicta results: {" + numDictaResults + "}");
-		List<Hit> dictaHits = dm.getListHits(targetPhrase, numDictaResults);
-		HitList dictaList = new HitList(dictaHits, "Dicta");
-		dictaList.printString();
+		if (numDictaResults > 0) {
+			List<Hit> dictaHits = dm.getListHits(targetPhrase, numDictaResults);
+			HitList dictaList = new HitList(dictaHits, "Dicta");
+			dictaList.printString();
+		}
 
-//		SefariaMachinery sm = new SefariaMachinery(driver, MAXWAIT);
-//		sm.goToSefaria();
-//		sm.closeCookieNotification();
-//		int numSefariaResults = sm.getNumResults(targetPhrase);
-//		System.out.println("Sefaria # Results (in total): {" + numSefariaResults + "}");
-//		List<Hit> mainSefariaHits = sm.getListHits(targetPhrase, numSefariaResults);
-//		HitList mainSefaria = new HitList(mainSefariaHits, "Main Sefaria");
-//		mainSefaria.printString();
-//
-//		List<Hit> alternateSefariaHits = sm.getListAlternateHits(targetPhrase, numSefariaResults);
-//		HitList alternateSefaria = new HitList(alternateSefariaHits, "Alt Girsa Sefaria");
-//		alternateSefaria.printString();
-//		
+		SefariaMachinery sm = new SefariaMachinery(driver, MAXWAIT);
+		sm.goToSefaria();
+		sm.closeCookieNotification();
+		int numSefariaResults = sm.getNumResults(targetPhrase);
+		System.out.println("Sefaria # Results (in total): {" + numSefariaResults + "}");
+		if (numSefariaResults > 0) {
+			List<Hit> mainSefariaHits = sm.getListHits(targetPhrase, numSefariaResults);
+			HitList mainSefaria = new HitList(mainSefariaHits, "Main Sefaria");
+			mainSefaria.printString();
+
+			List<Hit> alternateSefariaHits = sm.getListAlternateHits(targetPhrase, numSefariaResults);
+			HitList alternateSefaria = new HitList(alternateSefariaHits, "Alt Girsa Sefaria");
+			alternateSefaria.printString();
+		}
+		//
 //		int sefariaSize = mainSefaria.getSize();
 //		int altSize = alternateSefaria.getSize();
 //
