@@ -64,6 +64,9 @@ public class DictaRepo {
 	@FindBy(xpath = "//div[@class='sentence-holder']")
 	List<WebElement> talmudTextList;
 
+	@FindBy(xpath = "//li[@class='noresults']")
+	List<WebElement> noResultsMessage;
+
 	public void sendPhrase(String targetPhrase) {
 		WebElement box = ew.awaitElement(searchBox, MAXWAIT);
 		WebElement button = ew.awaitElement(searchBoxButton, MAXWAIT);
@@ -81,12 +84,20 @@ public class DictaRepo {
 		}
 	}
 
-	public String getNumHitsFound() {
-		String result = "number of hits not found";
-		WebElement element = ew.awaitElement(resultText, MAXWAIT);
-		if (resultText != null)
-			result = resultText.getText();
+	public String getNumHitsFound() throws InterruptedException {
+		String result = "No Result";
+		if (resultsFound()) {
+			WebElement resultMessage = ew.awaitElement(resultText, MAXWAIT);
+			if (resultMessage != null)
+				result = resultMessage.getText();
+			return result;
+		}
 		return result;
+	}
+
+	private boolean resultsFound() throws InterruptedException {
+		List<WebElement> listNoResults = ew.awaitList(noResultsMessage, MAXWAIT);
+		return listNoResults.size() == 0;
 	}
 
 	public WebElement findDropdown() {
@@ -109,7 +120,7 @@ public class DictaRepo {
 		int numDictaPages = getNumDictaPages(numHits);
 		List<Hit> dictaHitsList = new ArrayList<Hit>();
 		String[] nameDafAmudText = new String[4];
-		
+
 		System.out.println("Getting Dicta Hits...");
 		for (int page = 0; page < numDictaPages; page++) {
 			List<WebElement> summaryListLocal = ew.awaitList(summaryList, MAXWAIT);
@@ -132,11 +143,12 @@ public class DictaRepo {
 
 				Hit hit = new Hit(name, daf, amud, text);
 				dictaHitsList.add(hit);
-				
+
 				SharedMachinery.waiting(instance);
 
 			}
-			if((page + 1) < numDictaPages) clickNextPageButton();
+			if ((page + 1) < numDictaPages)
+				clickNextPageButton();
 		}
 		return dictaHitsList;
 	}
