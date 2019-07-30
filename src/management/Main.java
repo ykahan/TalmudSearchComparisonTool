@@ -19,22 +19,23 @@ public class Main {
 	static String targetPhrase;
 
 	public static void main(String[] args) throws InterruptedException {
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("Target phrase:");
-		targetPhrase = scanner.nextLine();
-//		targetPhrase = "היינו תנא קמא"; // phrase hard-coded for ease of testing
+//		Scanner scanner = new Scanner(System.in);
+//		System.out.println("Target phrase:");
+//		targetPhrase = scanner.nextLine();
+		targetPhrase = "היינו תנא קמא"; // low frequency phrase, hard-coded for ease of testing
+//		targetPhrase = "רבי מאיר"; // high frequency phrase, hard-coded for ease of testing
 		driver = Setup.setupDriver("Chrome");
 		System.out.println("Target phrase is {" + targetPhrase + "}");
 
-		DictaMachinery dm = new DictaMachinery(driver, MAXWAIT);
-		dm.goToDictaTalmudSearch(targetPhrase);
-		int numDictaResults = dm.getNumResults();
-		System.out.println("Dicta results: {" + numDictaResults + "}");
-		if (numDictaResults > 0) {
-			List<Hit> dictaHits = dm.getListHits(targetPhrase, numDictaResults);
-			HitList dictaList = new HitList(dictaHits, "Dicta");
-			dictaList.printString();
-		}
+//		DictaMachinery dm = new DictaMachinery(driver, MAXWAIT);
+//		dm.goToDictaTalmudSearch(targetPhrase);
+//		int numDictaResults = dm.getNumResults();
+//		System.out.println("Dicta results: {" + numDictaResults + "}");
+//		if (numDictaResults > 0) {
+//			List<Hit> dictaHits = dm.getListHits(targetPhrase, numDictaResults);
+//			HitList dictaList = new HitList(dictaHits, "Dicta");
+//			dictaList.printString();
+//		}
 
 		SefariaMachinery sm = new SefariaMachinery(driver, MAXWAIT);
 		sm.goToSefaria();

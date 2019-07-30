@@ -97,7 +97,9 @@ public class DictaRepo {
 
 	private boolean resultsFound() throws InterruptedException {
 		List<WebElement> listNoResults = ew.awaitList(noResultsMessage, MAXWAIT);
-		return listNoResults.size() == 0;
+		int size = listNoResults.size();
+		System.out.println("no results message list: " + size);
+		return size == 0;
 	}
 
 	public WebElement findDropdown() {
@@ -122,11 +124,13 @@ public class DictaRepo {
 		String[] nameDafAmudText = new String[4];
 
 		System.out.println("Getting Dicta Hits...");
+		int currentInstance = 1;
+
 		for (int page = 0; page < numDictaPages; page++) {
 			List<WebElement> summaryListLocal = ew.awaitList(summaryList, MAXWAIT);
 
 			int numFoundInstances = summaryListLocal.size();
-
+			
 			for (int instance = 0; instance < numFoundInstances; instance++) {
 				// getting name and location data
 				nameDafAmudText = getNameDafAmud(summaryListLocal, instance);
@@ -144,7 +148,9 @@ public class DictaRepo {
 				Hit hit = new Hit(name, daf, amud, text);
 				dictaHitsList.add(hit);
 
-				SharedMachinery.waiting(instance);
+				String waitingMessage = "Extracting Dicta Hits " + (currentInstance) + "/" + numHits + "\n";
+				SharedMachinery.waiting(waitingMessage);
+				currentInstance++;
 
 			}
 			if ((page + 1) < numDictaPages)

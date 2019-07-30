@@ -152,7 +152,8 @@ public class SefariaRepo {
 		List<WebElement> alternateGirsaTextList = getAlternateGirsaTexts();
 		int numAltGirsaos = alternateGirsaLocationDataList.size();
 
-		List<Hit> output = extractHitData(alternateGirsaLocationDataList, alternateGirsaTextList, numAltGirsaos);
+		List<Hit> output = extractHitData(alternateGirsaLocationDataList, alternateGirsaTextList, 
+				numAltGirsaos);
 
 		return output;
 	}
@@ -170,7 +171,7 @@ public class SefariaRepo {
 	private List<Hit> extractHitData(List<WebElement> localLocationDataList, List<WebElement> localTextsList,
 			int numBlocksFound) throws InterruptedException {
 		List<Hit> output = new ArrayList<Hit>();
-		System.out.println("Extracting Sefaria Data...");
+//		System.out.println("Extracting Sefaria Data...");
 		for (int current = 0; current < numBlocksFound; current++) {
 			if (notYerushalmi(localLocationDataList, current)) {
 				String[] locationDataArray = getlocationDataArray(localLocationDataList, current);
@@ -182,7 +183,8 @@ public class SefariaRepo {
 
 				Hit hit = new Hit(masechta, daf, amud, text);
 				output.add(hit);
-				SharedMachinery.waiting(current);
+				String waitingMessage = "Extracting Sefaria Hit Data " + (current + 1) + "/" + numBlocksFound + "\n";
+				SharedMachinery.waiting(waitingMessage);
 			}
 		}
 		return output;
@@ -202,10 +204,10 @@ public class SefariaRepo {
 
 	private void makeListFinishLoading(int numSefariaResults) throws InterruptedException {
 		int timesToScrollDown = (numSefariaResults / 50);
-		System.out.println("Scrolling down through Sefaria results...");
 		for (int i = 0; i < timesToScrollDown; i++) {
 			scrollToBottom();
-			SharedMachinery.waiting(i);
+			String waitingMessage = "Sefaria Scrolling Down " + (i + 1) + "/" + timesToScrollDown + "\n";
+			SharedMachinery.waiting(waitingMessage);
 			Thread.sleep(1000);
 
 		}
@@ -213,7 +215,7 @@ public class SefariaRepo {
 
 	private String[] getlocationDataArray(List<WebElement> localLocationDataList, int current) {
 		String[] locationDataArray = localLocationDataList.get(current).getText().split(" ");
-		System.out.println("locationDataArray established");
+//		System.out.println("locationDataArray established");
 		String masechta = "";
 		String daf = "";
 		String amud = "";
@@ -238,7 +240,7 @@ public class SefariaRepo {
 		amud = amudArray[0];
 
 		String[] output = { masechta, daf, amud };
-		System.out.println("output array established");
+//		System.out.println("output array established");
 		return output;
 	}
 

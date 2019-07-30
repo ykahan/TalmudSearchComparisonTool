@@ -21,9 +21,22 @@ public class SefariaMachinery {
 
 	public int getNumResults(String targetPhrase) throws InterruptedException {
 		repo.loadTargetPhrase(targetPhrase);
-		int unfilteredResults = repo.getNumResults();
-		if (unfilteredResults > 0) repo.filterResults();
-		return repo.getNumResults();
+//		Thread.sleep(1000);
+//		int unfilteredResults = repo.getNumResults();
+//		if (unfilteredResults > 0) repo.filterResults();
+//		return repo.getNumResults();
+		int numResults = 0;
+		int totalWaitInSeconds = 10;
+		for(int halfSecond = 0; halfSecond < (totalWaitInSeconds * 2); halfSecond++) {
+			numResults = repo.getNumResults();
+			if(numResults > 0) {
+				repo.filterResults();
+				numResults = repo.getNumResults();
+				return numResults;
+			}
+			else Thread.sleep(500);
+		}
+		return numResults;
 	}
 	
 	public void goToSefaria() {

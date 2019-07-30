@@ -43,6 +43,6 @@ public class ExplicitlyWait {
 			}
 			Thread.sleep(waitPerCheck);			
 		}
-		return null;
+		return list;
 	}
 }
