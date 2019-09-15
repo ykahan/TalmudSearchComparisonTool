@@ -126,6 +126,9 @@ public class SefariaRepo {
 	private void openAlternateTexts(List<WebElement> otherVersions, int size) {
 		for (int current = 0; current < size; current++) {
 			otherVersions.get(current).click();
+
+			String waitingMessage = "Opened alternate girsaos in Sefaria: " + (current + 1) + "/" + size + "\n";
+			SharedMachinery.waiting(waitingMessage);
 		}
 	}
 
@@ -152,8 +155,7 @@ public class SefariaRepo {
 		List<WebElement> alternateGirsaTextList = getAlternateGirsaTexts();
 		int numAltGirsaos = alternateGirsaLocationDataList.size();
 
-		List<Hit> output = extractHitData(alternateGirsaLocationDataList, alternateGirsaTextList, 
-				numAltGirsaos);
+		List<Hit> output = extractHitData(alternateGirsaLocationDataList, alternateGirsaTextList, numAltGirsaos);
 
 		return output;
 	}
@@ -170,6 +172,7 @@ public class SefariaRepo {
 
 	private List<Hit> extractHitData(List<WebElement> localLocationDataList, List<WebElement> localTextsList,
 			int numBlocksFound) throws InterruptedException {
+		System.out.println("Beginning extraction of Sefaria Hit data.");
 		List<Hit> output = new ArrayList<Hit>();
 //		System.out.println("Extracting Sefaria Data...");
 		for (int current = 0; current < numBlocksFound; current++) {
@@ -182,8 +185,9 @@ public class SefariaRepo {
 				String text = getInstanceText(localTextsList, current);
 
 				Hit hit = new Hit(masechta, daf, amud, text);
+
 				output.add(hit);
-				String waitingMessage = "Extracting Sefaria Hit Data " + (current + 1) + "/" + numBlocksFound + "\n";
+				String waitingMessage = "Extracted Sefaria Hit Data " + (current + 1) + "/" + numBlocksFound + "\n";
 				SharedMachinery.waiting(waitingMessage);
 			}
 		}
@@ -192,7 +196,9 @@ public class SefariaRepo {
 
 	private boolean notYerushalmi(List<WebElement> locationDataList, int current) {
 		String text = locationDataList.get(current).getText();
-		if(text.contains("תלמוד ירושלמי")) return false;
+//		return false;
+		if (text.contains("תלמוד ירושלמי"))
+			return false;
 		return true;
 	}
 
