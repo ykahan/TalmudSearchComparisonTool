@@ -24,7 +24,6 @@ public class Main {
 		targetPhrase = "היינו תנא קמא"; // low frequency phrase, hard-coded for ease of testing
 //		targetPhrase = "רבי מאיר"; // high frequency phrase, hard-coded for ease of testing
 		driver = Setup.setupDriver("Chrome");
-		targetPhrase = "טב למיתב";
 		System.out.println("Target phrase is {" + targetPhrase + "}");
 
 		DictaMachinery dm = new DictaMachinery(driver, MAXWAIT);
@@ -34,7 +33,6 @@ public class Main {
 
 		List<Hit> dictaHits = dm.getListHits(targetPhrase, numDictaResults);
 		HitList dictaList = new HitList(dictaHits, "Dicta");
-//			dictaList.printString();
 
 		SefariaMachinery sm = new SefariaMachinery(driver, MAXWAIT);
 		sm.goToSefaria();

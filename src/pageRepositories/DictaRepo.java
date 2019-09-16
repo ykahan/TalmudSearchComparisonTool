@@ -145,7 +145,7 @@ public class DictaRepo {
 				String amud = nameDafAmudText[2];
 				String text = nameDafAmudText[3];
 
-				Hit hit = new Hit(name, daf, amud, text);
+				Hit hit = new Hit(name, daf, amud, text, targetPhrase);
 				dictaHitsList.add(hit);
 
 				String waitingMessage = "Extracting Dicta Hits " + (currentInstance) + "/" + numHits + "\n";

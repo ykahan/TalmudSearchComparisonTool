@@ -143,7 +143,7 @@ public class SefariaRepo {
 
 		int numBlocksFound = blocksFound.size();
 
-		List<Hit> output = extractHitData(localLocationDataList, localTextsList, numBlocksFound);
+		List<Hit> output = extractHitData(localLocationDataList, localTextsList, numBlocksFound, targetPhrase);
 		return output;
 	}
 
@@ -155,7 +155,7 @@ public class SefariaRepo {
 		List<WebElement> alternateGirsaTextList = getAlternateGirsaTexts();
 		int numAltGirsaos = alternateGirsaLocationDataList.size();
 
-		List<Hit> output = extractHitData(alternateGirsaLocationDataList, alternateGirsaTextList, numAltGirsaos);
+		List<Hit> output = extractHitData(alternateGirsaLocationDataList, alternateGirsaTextList, numAltGirsaos, targetPhrase);
 
 		return output;
 	}
@@ -171,7 +171,7 @@ public class SefariaRepo {
 	}
 
 	private List<Hit> extractHitData(List<WebElement> localLocationDataList, List<WebElement> localTextsList,
-			int numBlocksFound) throws InterruptedException {
+			int numBlocksFound, String targetPhrase) throws InterruptedException {
 		System.out.println("Beginning extraction of Sefaria Hit data.");
 		List<Hit> output = new ArrayList<Hit>();
 //		System.out.println("Extracting Sefaria Data...");
@@ -184,7 +184,7 @@ public class SefariaRepo {
 				String amud = locationDataArray[2];
 				String text = getInstanceText(localTextsList, current);
 
-				Hit hit = new Hit(masechta, daf, amud, text);
+				Hit hit = new Hit(masechta, daf, amud, text, targetPhrase);
 
 				output.add(hit);
 				String waitingMessage = "Extracted Sefaria Hit Data " + (current + 1) + "/" + numBlocksFound + "\n";
