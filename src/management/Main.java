@@ -45,16 +45,6 @@ public class Main {
 
 		List<Hit> alternateSefariaHits = sm.getListAlternateHits(targetPhrase, numSefariaResults);
 		HitList alternateSefariaList = new HitList(alternateSefariaHits, "Alt Girsa Sefaria");
-
-		//
-//		int sefariaSize = mainSefaria.getSize();
-//		int altSize = alternateSefaria.getSize();
-//
-//		int totalSefariaHits = sefariaSize + altSize;
-//		boolean rightNumHits = (totalSefariaHits == numSefariaResults);
-//		System.out.println("Total Sefaria Hits equals all Sefaria results: " + rightNumHits);
-//		String eval1 = Evaluate.compare(dictaList, mainSefariaList);
-//		String eval2 = Evaluate.compare(dictaList2, alternateSefariaList);
 		
 		dictaList.printString();
 		mainSefariaList.printString();
@@ -62,10 +52,6 @@ public class Main {
 		
 		Evaluate.printComparison(dictaList, mainSefariaList);
 		Evaluate.printComparison(dictaList2, alternateSefariaList);
-		
-//		dictaList.printNumFound();
-//		mainSefariaList.printNumFound();
-//		alternateSefariaList.printNumFound();
 		
 		driver.close();
 	}
