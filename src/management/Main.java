@@ -21,8 +21,7 @@ public class Main {
 //		Scanner scanner = new Scanner(System.in);
 //		System.out.println("Target phrase:");
 //		targetPhrase = scanner.nextLine();
-		targetPhrase = "היינו תנא קמא"; // low frequency phrase, hard-coded for ease of testing
-//		targetPhrase = "רבי מאיר"; // high frequency phrase, hard-coded for ease of testing
+		targetPhrase = Phrases.tanyaKevasei;
 		driver = Setup.setupDriver("Chrome");
 		System.out.println("Target phrase is {" + targetPhrase + "}");
 
@@ -33,6 +32,7 @@ public class Main {
 
 		List<Hit> dictaHits = dm.getListHits(targetPhrase, numDictaResults);
 		HitList dictaList = new HitList(dictaHits, "Dicta");
+		HitList dictaList2 = dictaList.duplicateList("Dicta");
 
 		SefariaMachinery sm = new SefariaMachinery(driver, MAXWAIT);
 		sm.goToSefaria();
@@ -53,16 +53,19 @@ public class Main {
 //		int totalSefariaHits = sefariaSize + altSize;
 //		boolean rightNumHits = (totalSefariaHits == numSefariaResults);
 //		System.out.println("Total Sefaria Hits equals all Sefaria results: " + rightNumHits);
-		Evaluate.compare(dictaList, mainSefariaList);
-		Evaluate.compare(dictaList, alternateSefariaList);
+//		String eval1 = Evaluate.compare(dictaList, mainSefariaList);
+//		String eval2 = Evaluate.compare(dictaList2, alternateSefariaList);
 		
 		dictaList.printString();
 		mainSefariaList.printString();
 		alternateSefariaList.printString();	
 		
-		dictaList.printNumFound();
-		mainSefariaList.printNumFound();
-		alternateSefariaList.printNumFound();
+		Evaluate.printComparison(dictaList, mainSefariaList);
+		Evaluate.printComparison(dictaList2, alternateSefariaList);
+		
+//		dictaList.printNumFound();
+//		mainSefariaList.printNumFound();
+//		alternateSefariaList.printNumFound();
 		
 		driver.close();
 	}

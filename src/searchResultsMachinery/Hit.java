@@ -9,13 +9,18 @@ public class Hit {
 	private boolean found;
 
 	public Hit(String masechta, String daf, String amud, String text, String targetText) {
-		this.masechta = masechta;
 		this.text = text;
 		this.targetText = targetText;
 		this.daf = daf;
 		this.amud = amud;
 		this.found = false;
-//		incrementPosition();
+		incrementPosition();
+		this.masechta = masechta;
+		if(this.masechta.contentEquals("נידה")) this.masechta = "נדה";
+	}
+
+	public Hit() {
+		this.found = false;
 	}
 
 	private void incrementPosition() {
@@ -31,6 +36,7 @@ public class Hit {
 		String[] foundWords = this.text.split(" ");
 		this.daf = foundWords[locPageChange + 1];
 		this.amud = foundWords[locPageChange + 3];
+		this.amud = this.amud.substring(0, this.amud.length() - 1);
 	}
 
 	private boolean doesPageChangeExist() {
@@ -62,13 +68,13 @@ public class Hit {
 		int lastCheckableWord = lengthBigText - lengthLittleText;
 
 		for (int word = 0; word <= lastCheckableWord; word++) {
-			if (bigTextWords[word].contentEquals(littleTextWords[0])) {
+			if (bigTextWords[word].contains(littleTextWords[0])) {
 				for (int targetWord = 0; targetWord < lengthLittleText; targetWord++) {
-					if (!bigTextWords[word + targetWord].contentEquals(littleTextWords[targetWord])) {
+					if (!bigTextWords[word + targetWord].contains(littleTextWords[targetWord])) {
 						break;
 					}
-					locLittleText = word;
 				}
+				locLittleText = word;
 			}
 		}
 		return locLittleText;
@@ -77,17 +83,41 @@ public class Hit {
 	public String getText() {
 		return this.text;
 	}
+	
+	public void setText(String text) {
+		this.targetText = text;
+	}
+	
+	public String getTargetText() {
+		return this.targetText;
+	}
+	
+	public void setTargetText(String text) {
+		this.targetText = text;
+	}
 
 	public String getMasechta() {
 		return this.masechta;
+	}
+	
+	public void setMasechta(String masechta) {
+		this.masechta = masechta;
 	}
 
 	public String getDaf() {
 		return this.daf;
 	}
+	
+	public void setDaf(String daf) {
+		this.daf = daf;
+	}
 
 	public String getAmud() {
 		return this.amud;
+	}
+	
+	public void setAmud(String amud) {
+		this.amud = amud;
 	}
 
 	public boolean getFound() {
@@ -103,7 +133,7 @@ public class Hit {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Text: " + getText() + "\n");
-		sb.append("Location: " + getMasechta() + " " + getDaf() + " " + getAmud() + "\n");
+		sb.append("Location: " + getMasechta() + " " + getDaf() + " עמוד " + getAmud() + "\n");
 		sb.append("Found in other source: " + getFound() + "\n");
 		for (int i = 0; i < 40; i++) {
 			sb.append("-");
