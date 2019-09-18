@@ -32,8 +32,8 @@ public class Main {
 
 		List<Hit> dictaHits = dm.getListHits(targetPhrase, numDictaResults);
 		HitList dictaList = new HitList(dictaHits, "Dicta");
-		HitList dictaList2 = dictaList.duplicateList("Dicta");
-
+		HitList dictaList2 = dictaList.duplicateList("Dicta v2");
+ 
 		SefariaMachinery sm = new SefariaMachinery(driver, MAXWAIT);
 		sm.goToSefaria();
 		sm.closeCookieNotification();
